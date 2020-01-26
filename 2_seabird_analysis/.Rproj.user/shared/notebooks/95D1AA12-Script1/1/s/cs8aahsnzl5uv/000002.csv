@@ -1,0 +1,4 @@
+"0","# select only columns we need"
+"0",""
+"0","needed_ship_data <- raw_ship_data %>%"
+"0","  select(""RECORD ID"", ""LATCELL"", ""LONGECELL"")"

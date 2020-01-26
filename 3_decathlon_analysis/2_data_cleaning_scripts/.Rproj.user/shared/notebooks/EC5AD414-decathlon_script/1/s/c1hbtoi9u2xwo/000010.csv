@@ -1,0 +1,3 @@
+"0","# format name column"
+"0","row_names <- mutate_all(row_names, .funs = tolower)"
+"0","view(row_names)"

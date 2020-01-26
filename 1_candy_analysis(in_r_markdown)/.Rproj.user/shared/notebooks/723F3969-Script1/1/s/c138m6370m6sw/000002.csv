@@ -1,0 +1,4 @@
+"0","pattern2 <- ""\\]"""
+"0","candy_names_second_bracket <- candy_names_first_bracket %>%"
+"0","  mutate(candy = str_replace(candy, pattern2, """")) %>%"
+"0","  select(age, gender, country, trick_or_treat, candy, emotion)"

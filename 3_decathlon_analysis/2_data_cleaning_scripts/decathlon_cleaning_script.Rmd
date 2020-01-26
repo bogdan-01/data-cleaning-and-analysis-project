@@ -1,0 +1,70 @@
+
+```{r, message=FALSE}
+library(here)
+library(readr)
+library(tidyverse)
+```
+
+
+```{r, message=FALSE}
+raw_decathlon <- read_rds(here("1_raw_data/decathlon.rds"))
+```
+
+
+```{r}
+names(raw_decathlon)
+```
+
+```{r}
+renamed_cols <- rename(raw_decathlon, long_jump = "Long.jump", high_jump = "High.jump", shot_put = "Shot.put", discus = "Discus", pole_vault = "Pole.vault", javeline = "Javeline", rank = "Rank", points = "Points", competition = "Competition", hurdle_110m = "110m.hurdle")
+
+head(renamed_cols)
+```
+
+
+```{r}
+# add all names from rows to one column called "name"
+row_to_col <- rownames_to_column(renamed_cols, var = "name")
+head(row_to_col)
+```
+
+
+```{r}
+# format name column to lowercase
+row_names <- mutate_all(row_to_col, .funs = tolower)
+head(row_names)
+```
+
+
+```{r}
+# format data frame to wide format and change selected columns to numeric
+wide_decathlon <- row_names %>%
+  pivot_longer(cols = c("100m", "hurdle_110m", "400m", "1500m", "long_jump", "high_jump", "pole_vault", "shot_put", "discus", "javeline"), 
+               names_to = "event", 
+               values_to = "result") %>%
+  mutate_at(c("rank", "points", "result"), as.numeric)
+
+head(wide_decathlon)
+```
+
+
+```{r}
+# export clean data to csv
+
+write_csv(wide_decathlon, here("3_clean_data/clean_decathlon.csv"))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,4 @@
+"0","# select only columns we need"
+"0",""
+"0","needed_bird_data <- raw_bird_data %>%"
+"0","  select(""RECORD ID"", ""Species common name (taxon [AGE / SEX / PLUMAGE PHASE])"", ""Species  scientific name (taxon [AGE /SEX /  PLUMAGE PHASE])"", ""Species abbreviation"", ""COUNT"")"

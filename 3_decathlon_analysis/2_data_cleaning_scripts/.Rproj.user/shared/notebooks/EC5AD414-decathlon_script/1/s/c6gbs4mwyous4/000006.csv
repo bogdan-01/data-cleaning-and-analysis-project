@@ -1,0 +1,6 @@
+"0","wide_decathlon <- row_names %>%"
+"0","  pivot_longer(cols = c(""100m"", ""hurdle_110m"", ""400m"", ""1500m"", ""long_jump"", ""high_jump"", ""pole_vault"", ""shot_put"", ""discus"", ""javeline""), "
+"0","               names_to = ""event"", "
+"0","               values_to = ""result"")"
+"0",""
+"0","view(wide_decathlon)"

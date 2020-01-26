@@ -1,0 +1,6 @@
+"0","longest_jump <- clean_data %>%"
+"0","  filter(event == ""long_jump"") %>%"
+"0","  arrange(desc(result)) %>%"
+"0","  top_n(1)"
+"0","  "
+"0","longest_jump"

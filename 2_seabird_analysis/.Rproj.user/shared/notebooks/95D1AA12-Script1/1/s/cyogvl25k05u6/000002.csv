@@ -1,0 +1,4 @@
+"0","# decided to get rid of NAs as it is not needed for this analysis"
+"0",""
+"0","seabirds_no_na <- joined_bird_ship %>%"
+"0","  drop_na()"

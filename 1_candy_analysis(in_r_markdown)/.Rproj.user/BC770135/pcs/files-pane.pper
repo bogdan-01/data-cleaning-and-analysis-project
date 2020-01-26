@@ -1,0 +1,9 @@
+{
+    "path" : "~/data_cleaning_project/task_4/clean_data",
+    "sortOrder" : [
+        {
+            "ascending" : true,
+            "columnIndex" : 2
+        }
+    ]
+}

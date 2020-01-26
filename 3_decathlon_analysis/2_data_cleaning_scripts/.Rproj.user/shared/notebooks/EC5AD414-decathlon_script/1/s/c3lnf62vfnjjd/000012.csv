@@ -1,0 +1,3 @@
+"0","tidy_decathlon <- rename(raw_decathlon, long_jump = ""Long.jump"", high_jump = ""High.jump"", shot_put = ""Shot.put"", discus = ""Discus"", pole_vault = ""Pole.vault"", javeline = ""Javeline"", rank = ""Rank"", points = ""Points"", competition = ""Competition"", hurdle_110m = ""110m.hurdle"")"
+"0",""
+"0","view(raw_decathlon)"

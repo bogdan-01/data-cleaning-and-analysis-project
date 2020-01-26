@@ -1,0 +1,8 @@
+"0","# mistake in raw dataset - replace missing measure data (NA) with correct measure (cup) from dataset and mutate 'sour creamp cup' to 'sour cream'"
+"0",""
+"0","imputed_cake_code <- raw_cake_codes %>%"
+"0","  mutate(measure = replace(measure, "
+"0","                           is.na(measure), "
+"0","                           ""cup""))"
+"0",""
+"0","head(imputed_cake_code)"

@@ -1,0 +1,4 @@
+"0","clean_cakes %>% "
+"0","  filter(ingredient == ""Cocoa"") %>%"
+"0","  mutate(highest_cocoa_amount = max(amount)) %>%"
+"0","  head(1)"

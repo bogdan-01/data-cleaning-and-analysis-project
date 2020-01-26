@@ -1,0 +1,5 @@
+"0","top_three_shot_put <- clean_data %>%"
+"0","  filter(rank <= 3) %>%"
+"0","  filter(event == ""shot_put"")"
+"0","  "
+"0","top_three_shot_put"

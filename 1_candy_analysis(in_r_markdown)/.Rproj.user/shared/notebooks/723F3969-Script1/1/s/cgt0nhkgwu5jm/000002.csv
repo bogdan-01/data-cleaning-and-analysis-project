@@ -1,0 +1,3 @@
+"0","# i now need to identify outliers and this can be done visually by looking at boxplot of the data. We only need to do this for the age data as that is the only numeric column in our data."
+"0",""
+"0","boxplot(candy_almost_clean$age)"

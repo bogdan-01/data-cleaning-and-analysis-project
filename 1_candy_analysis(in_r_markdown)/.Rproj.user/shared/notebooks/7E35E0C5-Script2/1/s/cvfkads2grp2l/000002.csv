@@ -1,0 +1,5 @@
+"0","total_ratings <- clean_candy_data %>%"
+"0","  select(emotion) %>%"
+"0","  na.omit(emotion) %>%"
+"0","  summarise(total_ratings = n())"
+"0","total_ratings"

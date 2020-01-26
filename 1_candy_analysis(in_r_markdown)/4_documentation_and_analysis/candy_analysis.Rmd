@@ -1,0 +1,330 @@
+---
+title: "Candy data - documentation and analysis"
+author: "Bogdan Handrea"
+date: "14/11/2019"
+---
+
+## Step 1: Cleaning the data (summary)
+
+> In order to be able to analyse the data, I performed data cleaning functions in order to convert the raw data into a form useful for analysis. For this exercise I used a "halloween candy" dataset from [SCQ](https://www.scq.ubc.ca/so-much-candy-data-seriously/).
+
+```{r, eval=FALSE}
+library(tidyverse)
+library(here)
+library(readxl)
+```
+
+### Converting to long format
+
+> I converted the data (candy clumns) into long format in order to perform tasks faster and more efficiently in R. Prior to this, I renamed the columns. This step was done for all three raw datasets for the years 2015, 2016 and 2017. 
+
+```{r, eval=FALSE}
+long_2015_candy <- raw_2015_candy %>%
+  select("How old are you?", "Are you going actually going trick or treating yourself?",  starts_with("[")) %>%
+  rename(age = "How old are you?", trick_or_treat = "Are you going actually going trick or treating yourself?") %>%
+  pivot_longer(starts_with("["), 
+               names_to = "candy", 
+               values_to = "emotion") %>%
+  mutate(age = as.integer(age))
+```
+
+### Joining datasets
+
+> I used the `bind_rows` function to combine the three newly created datasets together.
+
+```{r, eval=FALSE}
+joined_candy <- bind_rows(long_2015_candy, long_2016_candy, long_2017_candy)
+joined_candy
+```
+
+### Hard coding, baby!
+
+> I noticed the country column is especially messy, so I looked for all the unique values in it. This allowed me to know exactly what needs to be changed. 
+
+```{r, eval=FALSE}
+unique(joined_candy$country)
+```
+
+> I changed the names of the countries accordingly so that we have one of each character value.
+
+```{r, eval=FALSE}
+joined_candy_2 <- joined_candy %>%
+  select(everything()) %>%
+  mutate(country = recode(country, "USA USA USA!!!!"= "US"))
+
+# and so on for all weird names so that the output is "US" for all values
+```
+
+> I imputed NAs where the supplied country name is vague.
+
+```{r, eval=FALSE}
+joined_candy_to_na <- joined_candy_2 %>%
+  mutate(country = replace(country, country == "A tropical island south of the equator", NA)) %>%
+  mutate(country = replace(country, country == "Neverland", NA))
+
+# and so on for all weird names so that the output is NA
+```
+  
+  
+```{r, eval=FALSE}
+# checked the candy column for unique values
+unique(joined_candy_to_na$candy)
+```
+
+> As I haven't done this through the janitor package before pivoting long and joining the columns, I will need to replace the characters before and after the name of the candy by using str_replace.
+
+```{r, eval=FALSE}
+# note here that I used \\ in front of the | so it recognises it as a regular character vector
+
+pattern <- "Q6 \\| " 
+candy_names_good <- joined_candy_to_na %>%
+  mutate(candy = str_replace(candy, pattern, "")) %>%
+  select(age, gender, country, trick_or_treat, candy, emotion)
+
+# I also did this for "[" and "]"
+```
+  
+> After looking at the unique values for the candy column, I decided to replace all the ones that are not related to candy with NA.
+  
+```{r, eval=FALSE}
+candy_almost_clean <- candy_names_second_bracket %>%
+  mutate(candy = replace(candy, candy == "Real Housewives of Orange County Season 9 Blue-Ray", NA)) %>%
+  mutate(candy = replace(candy, candy == "Abstained from M&M'ing.", NA))
+
+# and so on for all other ones
+```
+
+### Dealing with outliers
+
+> I removed the NAs from the age column before finding the outliers.
+
+```{r, eval=FALSE}
+candy_almost_clean <- drop_na(candy_almost_clean, "age")
+```
+  
+> I now need to identify outliers and this can be done visually by looking at boxplot of the data using the code below. We only need to do this for the age data as that is the only numeric column in our data.
+  
+```{r, eval=FALSE}
+boxplot(candy_almost_clean$age)
+```
+  
+> Using `ggplot` also does ths trick.
+  
+```{r, eval=FALSE}
+ggplot(candy_almost_clean, aes(x = "candy_almost_clean", y = age)) +
+    geom_boxplot()
+```
+  
+> The `outliers` library needs to be loaded before manipulating outliers.
+  
+```{r, eval=FALSE}
+library(outliers)
+```
+
+> There are one or more outliers present in the age column. We need to get the z-scores for this column to find the variability of the data. 
+  
+```{r, eval=FALSE}
+age_zscores <- scores(candy_almost_clean$age)
+```
+  
+  
+```{r, eval=FALSE}
+# create a logical vector that is "TRUE" if zscores are greater than 3 or less than negative 3
+
+is_outlier <- age_zscores > 3 | age_zscores < -3
+```
+  
+  
+```{r, eval=FALSE}
+# add a column which shows us the outliers
+candy_almost_clean <- candy_almost_clean %>%
+  mutate(is_outlier = is_outlier)
+```
+  
+  
+```{r, eval=FALSE}
+# I have now created a plot showing the outliers and non-outliers separately
+
+ggplot(candy_almost_clean, aes(y = age)) +
+    geom_boxplot() +
+    coord_flip() +
+    facet_wrap(~is_outlier)
+```
+  
+  
+```{r, eval=FALSE}
+# created a table just with the outliers which clearly shows the age "200587" is present 95 times in the date
+
+age_outliers <- candy_almost_clean %>%
+  filter(is_outlier == TRUE)
+```
+  
+> Remove outliers by filtering the newly created "is_outlier" column
+  
+```{r, eval=FALSE}
+# remove these outliers by filtering
+candy_no_outliers <- candy_almost_clean %>%
+  filter(is_outlier == FALSE)
+```
+  
+  
+```{r, eval=FALSE}
+# re-check the age data to make sure there are no more weird values
+unique(candy_no_outliers$age)
+  [1]   35   41   33   31   30   38   48   39   54   40   36   47   60   34   44   46   52
+ [18]   37   57   32   45   58   43   49   64   26   53   27   50   42   28   13   51   70
+ [35]   19   25   59   61   23   55   12   21   16   56   22    6   29   24    8   20 1880
+ [52]   15   71   75   18   17   63   65   62   69   67   66   74   10   72   14    9   11
+ [69]   68   99    5    7   77  100  115  123  388  120    0  108  350 2000  400   85   97
+ [86]  490   78   79   81   82  142   90  312   88  102   76 1000   73    1    4
+```
+  
+> I did a final check and noticed there are a few weird values left. I replaced these with NAs.
+  
+```{r, eval=FALSE}
+age_na <- candy_no_outliers %>%
+  mutate(age = replace(age, age == "5", NA)) %>%
+  mutate(age = replace(age, age == "6", NA)) %>%
+  mutate(age = replace(age, age == "490", NA)) %>%
+  mutate(age = replace(age, age == "1880", NA))
+
+# and so on for all weird values until we get what we feel is clean data as below
+
+[1] 35 41 33 31 30 38 48 39 54 40 36 47 60 34 44 46 52 37 57 32 45 58 43 49 64 26 53 27
+[29] 50 42 28 13 51 70 19 25 59 61 23 55 12 21 16 56 22 NA 29 24 20 15 71 75 18 17 63 65
+[57] 62 69 67 66 74 10 72 14 11 68 99 77 85 97 78 79 81 82 90 88 76 73
+
+```
+  
+> I dropped NAs and export the clean data.
+  
+```{r, eval=FALSE}
+# drop NAs from age column
+clean_candy <- drop_na(age_na, "age")
+```
+  
+  
+```{r, eval=FALSE}
+# remove outlier column and export
+clean_candy_data <- clean_candy %>%
+  select(-is_outlier)
+```
+
+
+
+# Step 2: Analysing the data
+
+```{r, message=FALSE}
+library(tidyverse)
+library(here)
+```
+
+
+> Load in the csv file
+
+```{r, warning=FALSE, message=FALSE}
+clean_candy_data <- read_csv(here("3_clean_data/clean_candy_data.csv"),
+                             col_types = cols(gender = col_character(), 
+                                              country = col_character()))
+# I specified the type of column I want these to be treated as.
+```
+
+
+
+#### I am going to find out the total number of candy ratings given across the three years of available data. I will not count missing values.
+
+
+```{r}
+all_ratings <- clean_candy_data %>%
+  select(emotion) %>%
+  na.omit(emotion) %>%
+  count(emotion)
+all_ratings
+```
+  
+> I first wanted to see the number of ratings for each emotion.
+  
+```{r}
+total_ratings <- clean_candy_data %>%
+  select(emotion) %>%
+  na.omit(emotion) %>%
+  summarise(total_ratings = n())
+total_ratings
+```
+
+> The total number of ratings is 733,468. 
+
+
+#### I will now find out the average age of people who are going out trick or treating and the average age of people not going trick or treating.
+
+
+```{r}
+trick_or_treat_age <- clean_candy_data %>%
+  select(age, trick_or_treat) %>%
+  group_by(trick_or_treat) %>%
+  na.omit(trick_or_treat) %>%
+  summarise(average_age = mean(age))
+
+trick_or_treat_age
+```
+
+> The average age of people going "trick-or-treating" was 35 and for those not going was 39. This is an expected result, as younger people usually go trick-or-treating. However, I was expecting the difference to be larger. 
+
+
+#### Next, I will find out which candy bar revived the most "joy", "despair" and "meh" emotions.
+
+
+```{r}
+clean_candy_data %>%
+  filter(!is.na(candy)) %>%
+  filter(!is.na(emotion)) %>%
+  group_by(emotion, candy) %>%
+  summarise(count = n()) %>%
+  filter(count == max(count))
+```
+
+> The "broken glow stick" candy revived most "despair" emotions, the "any full sized candy bar" category revived the most "joy" ratings, while most people gave lollipops a "meh" rating.
+
+
+#### I will now find out how many people rated Starburst as "despair".
+
+
+```{r}
+starburst_despair <- clean_candy_data %>%
+  select(candy, emotion) %>%
+  filter(candy == "Starburst") %>%
+  filter(emotion == "DESPAIR") %>%
+  summarise(depair_ratings_starburst = n())
+
+starburst_despair
+```
+
+> 1861 people rated "Starburst" as "despair". 
+
+
+#### I will now find out which country gave the most responses for all emotions.
+
+
+```{r}
+clean_candy_data %>%
+  filter(!is.na(country)) %>%
+  group_by(country) %>%
+  summarise(count = n()) %>%
+  filter(count == max(count))
+```
+
+
+> Most ratings were from the US, 307507.
+
+
+
+  
+
+
+
+   
+
+
+
+
+

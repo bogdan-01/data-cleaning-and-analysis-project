@@ -1,0 +1,7 @@
+"0","trick_or_treat_age <- clean_candy_data %>%"
+"0","  select(age, trick_or_treat) %>%"
+"0","  group_by(trick_or_treat) %>%"
+"0","  na.omit(trick_or_treat) %>%"
+"0","  summarise(average_age = mean(age))"
+"0",""
+"0","trick_or_treat_age"

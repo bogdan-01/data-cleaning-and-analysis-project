@@ -1,0 +1,6 @@
+"0","highest_total_count_over_minus30_lat <- clean_seabirds %>%"
+"0","  select(bird_common_name, bird_scientific_name, bird_abbrev_name, count, latitude, longitude) %>%"
+"0","  filter(cume_dist(desc(latitude)) > -30) %>%"
+"0","  top_n(1, count)"
+"0","  "
+"0","highest_total_count_over_minus30_lat"

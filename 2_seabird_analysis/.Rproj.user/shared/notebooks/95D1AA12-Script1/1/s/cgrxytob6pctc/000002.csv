@@ -1,0 +1,3 @@
+"0","# join ship data and bird record data"
+"0",""
+"0","joined_bird_ship <- left_join(needed_bird_data, needed_ship_data, ""RECORD ID"")"

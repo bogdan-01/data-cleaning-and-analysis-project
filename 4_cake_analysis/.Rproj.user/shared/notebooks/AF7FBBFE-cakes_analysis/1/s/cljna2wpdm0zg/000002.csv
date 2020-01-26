@@ -1,0 +1,4 @@
+"0","clean_cakes %>%"
+"0","  filter(cake == ""Sponge"") %>%"
+"0","  filter(measure == ""cup"") %>%"
+"0","  summarise(cups_used = sum(amount))"

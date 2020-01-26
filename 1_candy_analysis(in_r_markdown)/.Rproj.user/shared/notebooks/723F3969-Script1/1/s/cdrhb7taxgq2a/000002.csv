@@ -1,0 +1,3 @@
+"0","# I will have to remove NAs from the age column before finding the outliers"
+"0",""
+"0","candy_almost_clean <- drop_na(candy_almost_clean, ""age"")"

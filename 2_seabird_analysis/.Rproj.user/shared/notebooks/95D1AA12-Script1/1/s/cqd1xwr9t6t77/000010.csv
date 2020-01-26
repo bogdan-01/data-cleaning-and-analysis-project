@@ -1,0 +1,2 @@
+"0","raw_bird_data <- read_excel(here(""raw_data/seabirds.xls""), sheet = ""Bird data by record ID"")"
+"2","Expecting logical in I21756 / R21756C9: got 'M'"

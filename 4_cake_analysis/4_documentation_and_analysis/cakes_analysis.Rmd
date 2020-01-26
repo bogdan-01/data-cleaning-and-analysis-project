@@ -1,0 +1,52 @@
+
+
+```{r, message=FALSE}
+library(tidyverse)
+library(here) 
+
+clean_cakes <- read_csv(here("3_clean_data/clean_cakes.csv"))
+```
+
+
+1. I will find out which cake has the most cocoa in it.
+
+```{r}
+clean_cakes %>% 
+  filter(ingredient == "Cocoa") %>%
+  mutate(highest_cocoa_amount = max(amount)) %>%
+  head(1)
+```
+
+
+2. I am going to find out how many cups of ingredients are used in total for sponge cakes.
+
+```{r}
+clean_cakes %>%
+  filter(cake == "Sponge") %>%
+  filter(measure == "cup") %>%
+  summarise(cups_used = sum(amount))
+```
+
+3. I am also going to find out how many ingredients are measured in teaspoons.
+
+```{r}
+clean_cakes %>%
+  filter(measure == "teaspoon") %>%
+  summarise(ingredients_teaspoon = n_distinct(ingredient))
+```
+
+4. Finally, I'll check which ingredients are used only once.
+
+```{r}
+clean_cakes %>%
+  group_by(ingredient) %>%
+  summarise(ingred_used_once = n()) %>% 
+  filter(ingred_used_once == 1)
+```
+
+
+
+
+
+
+

@@ -1,0 +1,7 @@
+"0","avg_100m_time <- clean_data %>%"
+"0","  select(name, competition, event, result) %>%"
+"0","  group_by(competition) %>%"
+"0","  filter(event == ""100m"") %>%"
+"0","  summarise(mean_100m_time = mean(result))"
+"0","  "
+"0","avg_100m_time"

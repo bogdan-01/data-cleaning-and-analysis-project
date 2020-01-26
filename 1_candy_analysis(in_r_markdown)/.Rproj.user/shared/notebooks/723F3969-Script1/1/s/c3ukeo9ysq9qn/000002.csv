@@ -1,0 +1,5 @@
+"0","# we can clearly see that there are one or more outliers present in the age column."
+"0","# we need to get the z-scores for this column"
+"0",""
+"0","age_zscores <- scores(candy_almost_clean$age)"
+"0",""

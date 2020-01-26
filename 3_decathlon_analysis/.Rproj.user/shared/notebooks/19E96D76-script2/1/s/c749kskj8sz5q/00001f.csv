@@ -1,0 +1,8 @@
+"0","highest_points <- clean_data %>%"
+"0","  distinct(name, competition, points) %>%"
+"0","  group_by(name) %>%"
+"0","  summarise(highest_total_points = sum(points)) %>%"
+"0","  arrange(desc(highest_total_points)) %>%"
+"0","  top_n(1)"
+"0",""
+"0","highest_points"

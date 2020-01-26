@@ -1,0 +1,4 @@
+"0","# created a table just with the outliers which clearly shows the age ""200587"" is present 95 times in the date"
+"0",""
+"0","age_outliers <- candy_almost_clean %>%"
+"0","  filter(is_outlier == TRUE)"

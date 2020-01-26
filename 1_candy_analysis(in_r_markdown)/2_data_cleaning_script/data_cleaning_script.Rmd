@@ -1,0 +1,455 @@
+
+
+
+```{r, message=FALSE}
+library(tidyverse)
+library(here)
+library(readxl)
+```
+
+
+
+
+```{r}
+raw_2015_candy <- read_excel(here("1_raw_data/boing-boing-candy-2015.xlsx"))
+head(raw_2015_candy)
+```
+
+
+```{r}
+raw_2016_candy <- read_excel(here("1_raw_data/boing-boing-candy-2016.xlsx"))
+head(raw_2016_candy)
+```
+
+
+```{r}
+raw_2017_candy <- read_excel(here("1_raw_data/boing-boing-candy-2017.xlsx"))
+head(raw_2017_candy)
+```
+
+
+```{r}
+#convert to long format
+long_2015_candy <- raw_2015_candy %>%
+  select("How old are you?", "Are you going actually going trick or treating yourself?",  starts_with("[")) %>%
+  rename(age = "How old are you?", trick_or_treat = "Are you going actually going trick or treating yourself?") %>%
+  pivot_longer(starts_with("["), 
+               names_to = "candy", 
+               values_to = "emotion") %>%
+  mutate(age = as.integer(age))
+head(long_2015_candy)
+```
+
+```{r}
+#convert to long format
+long_2016_candy <- raw_2016_candy %>%
+  select("How old are you?", "Are you going actually going trick or treating yourself?",  "Your gender:", "Which country do you live in?", starts_with("[")) %>%
+  rename(age = "How old are you?", trick_or_treat = "Are you going actually going trick or treating yourself?", gender = "Your gender:", country = "Which country do you live in?") %>%
+  pivot_longer(starts_with("["), 
+               names_to = "candy", 
+               values_to = "emotion") %>%
+  mutate(age = as.integer(age))
+head(long_2016_candy)
+```
+
+
+
+
+```{r}
+#convert to long format
+long_2017_candy <- raw_2017_candy %>%
+  select("Q3: AGE", "Q1: GOING OUT?", "Q2: GENDER", "Q4: COUNTRY", starts_with("Q6")) %>%
+  rename(age = "Q3: AGE", trick_or_treat = "Q1: GOING OUT?", gender = "Q2: GENDER", country = "Q4: COUNTRY") %>%
+  pivot_longer(starts_with("Q6"), 
+               names_to = "candy", 
+               values_to = "emotion") %>%
+  mutate(age = as.integer(age))
+head(long_2017_candy)
+```
+
+
+
+```{r}
+#combine the rows of each dataset into one
+joined_candy <- bind_rows(long_2015_candy, long_2016_candy, long_2017_candy)
+head(joined_candy)
+```
+
+```{r}
+# I noticed the country column is especially messy, so I will now try to find all the unique values in it and clean it.
+unique(joined_candy$country)
+```
+
+
+
+
+```{r}
+# I am now going to change the names of the countries accordingly so that we have one of each character value. This is probably the most laborious part of the cleaning of this document, and bare in mind that are different ways of doing this.
+
+joined_candy_recoded <- joined_candy %>%
+  select(everything()) %>%
+  mutate(country = recode(country, "Fear and Loathing"= "US", 
+                                   "USA USA USA!!!!"  = "US", 
+                                   "united ststes"    = "US", 
+                                   "United Statea"    = "US", 
+                                   "u s a"            = "US", 
+                                   "united States"    = "US", 
+                                   "Alaska"           = "US", 
+                                   "USAA"             = "US", 
+                                   "murrika"          = "US", 
+                                   "United Statss"    = "US", 
+                                   "United ststes"    = "US", 
+                                   "New Jersey"       = "US", 
+                                   "UD"               = "US", 
+                                   "Ahem....Amerca"   = "US", 
+                                   "United Stated"    = "US", 
+                                   "I pretend to be from Canada, but I am really from the United States."                                       = "US", 
+                                   "USa"              = "US", 
+                                   "California"       = "US", 
+                                   "New York"         = "US", 
+                                   "usas"             = "US", 
+                                   "'merica"          = "US", 
+                                   "USA? Hard to tell anymore.." = "US", 
+                                   "unite states"     = "US", 
+                                   "The United States of America" = "US", 
+                                   "U S"              = "US", 
+                                   "Unied States"     = "US", 
+                                   "North Carolina"   = "US", 
+                                   "The United States"= "US", 
+                                   "US of A"          = "US", 
+                                   "unhinged states"  = "US", 
+                                   "USAUSAUSA"        = "US", 
+                                   "u.s.a."           = "US", 
+                                   "United staes"     = "US", 
+                                   "United State"     = "US", 
+                                   "usa"              = "US", 
+                                   "USA"              = "US", 
+                                   "United States of America" = "US", 
+                                   "uSA"              = "US", 
+                                   "united states"    = "US", 
+                                   "United States"    = "US", 
+                                   "us"               = "US", 
+                                   "USSA"             = "US", 
+                                   "U.S.A."           = "US", 
+                                   "Murica"           = "US", 
+                                   "USA!"             = "US", 
+                                   "USA (I think but it's an election year so who can really tell)"                                                = "US", 
+                                   "Usa"              = "US", 
+                                   "U.S."             = "US", 
+                                   "Us"               = "US", 
+                                   "America"          = "US", 
+                                   "Units States"     = "US", 
+                                   "United states"    = "US", 
+                                   "USA USA USA"      = "US", 
+                                   "USA! USA! USA!"   = "US", 
+                                   "u.s."             = "US", 
+                                   "The Yoo Ess of Aaayyyyyy" = "US", 
+                                   "USA!!!!!!"        = "US", 
+                                   "United Sates"     = "US", 
+                                   "Merica"           = "US", 
+                                   "UNited States"    = "US", 
+                                   "the best one - usa" = "US", 
+                                   "USA! USA!"        = "US", 
+                                   "america"          = "US", 
+                                   "USA USA USA USA"  = "US", 
+                                   "Unites States"    = "US", 
+                                   "united states of america" = "US", 
+                                   "Sub-Canadian North America... 'Merica" = "US", 
+                                   "U.s."             = "US", 
+                                   "United Stetes"    = "US", 
+                                   "United  States of America" = "US", 
+                                   "United Kindom"    = "UK", 
+                                   "U.K."             = "UK", 
+                                   "Scotland"         = "UK", 
+                                   "United kingdom"   = "UK", 
+                                   "Uk"               = "UK", 
+                                   "United Kingdom"   = "UK", 
+                                   "uk"               = "UK", 
+                                   "CANADA"           = "Canada", 
+                                   "Canada`"          = "Canada", 
+                                   "Can"              = "Canada", 
+                                   "canada"           = "Canada",
+                                   "Canae"            = "Canada",
+                                   "australia"        = "Australia", 
+                                   "germany"          = "Germany", 
+                                   "france"           = "France", 
+                                   "belgium"          = "Belgium", 
+                                   "england"          = "UK", 
+                                   "endland"          = "UK", 
+                                   "hungary"          = "Hungary", 
+                                   "sweden"           = "Sweden", 
+                                   "finland"          = "Finland", 
+                                   "kenya"            = "Kenya", 
+                                   "españa"           = "Spain", 
+                                   "croatia"          = "Croatia", 
+                                   "Brasil"           = "Brazil", 
+                                   "hong kong"        = "Hong Kong", 
+                                   "spain"            = "Spain", 
+                                   "netherlands"      = "Netherlands", 
+                                   "The Netherlands"  = "Netherlands"))
+
+```
+
+```{r}
+unique(joined_candy_recoded$country)
+```
+
+
+```{r}
+# I imputed NAs where the supplied country name is vague
+
+joined_candy_to_na <- joined_candy_recoded %>%
+  mutate(country = replace(country, country == "A tropical island south of the equator", NA)) %>%
+  mutate(country = replace(country, country == "Neverland", NA)) %>%
+  mutate(country = replace(country, country == "this one", NA)) %>%
+  mutate(country = replace(country, country == "54.0", NA)) %>%
+  mutate(country = replace(country, country == "Cascadia", NA)) %>%
+  mutate(country = replace(country, country == "46", NA)) %>%
+  mutate(country = replace(country, country == "god's country", NA)) %>% 
+  mutate(country = replace(country, country == "45.0", NA)) %>%
+  mutate(country = replace(country, country == "EUA", NA)) %>%
+  mutate(country = replace(country, country == "Not the USA or Canada", NA)) %>%
+  mutate(country = replace(country, country == "Denial", NA)) %>%
+  mutate(country = replace(country, country == "35", NA)) %>%
+  mutate(country = replace(country, country == "cascadia", NA)) %>%
+  mutate(country = replace(country, country == "45", NA)) %>%
+  mutate(country = replace(country, country == "Atlantis", NA)) %>% 
+  mutate(country = replace(country, country == "N. America", NA)) %>%
+  mutate(country = replace(country, country == "1", NA)) %>%
+  mutate(country = replace(country, country == "I don't know anymore", NA)) %>%
+  mutate(country = replace(country, country == "subscribe to dm4uz3 on youtube", NA)) %>%
+  mutate(country = replace(country, country == "Narnia", NA)) %>% 
+  mutate(country = replace(country, country == "soviet canuckistan", NA)) %>%
+  mutate(country = replace(country, country == "there isn't one for old men", NA)) %>%
+  mutate(country = replace(country, country == "one of the best ones", NA)) %>%
+  mutate(country = replace(country, country == "Somewhere", NA)) %>%
+  mutate(country = replace(country, country == "Trumpistan", NA)) %>%
+  mutate(country = replace(country, country == "30.0", NA)) %>% 
+  mutate(country = replace(country, country == "See above", NA)) %>%
+  mutate(country = replace(country, country == "The republic of Cascadia", NA)) %>%
+  mutate(country = replace(country, country == "Earth", NA)) %>%
+  mutate(country = replace(country, country == "Pittsburgh", NA)) %>% 
+  mutate(country = replace(country, country == "insanity lately", NA)) %>%
+  mutate(country = replace(country, country == "51.0", NA)) %>%
+  mutate(country = replace(country, country == "47.0", NA)) %>% 
+  mutate(country = replace(country, country == "44.0", NA)) %>%
+  mutate(country = replace(country, country == "32", NA)) %>%
+  mutate(country = replace(country, country == "A", NA)) %>%
+  mutate(country = replace(country, country == "Korea", NA)) %>%
+  mutate(country = replace(country, country == "Europe", NA))
+joined_candy_to_na
+```
+
+```{r}
+unique(joined_candy_to_na$country)
+```
+
+
+```{r}
+# I will now check the candy column for unique values
+unique(joined_candy_to_na$candy)
+```
+
+
+
+```{r}
+# as I haven't done this through the janitor package before pivoting long and joining the columns, I will need to replace the characters before and after the name of the candy by using str_replace.
+
+pattern <- "Q6 \\| "
+candy_names_good <- joined_candy_to_na %>%
+  mutate(candy = str_replace(candy, pattern, "")) %>%
+  select(age, gender, country, trick_or_treat, candy, emotion)
+```
+
+
+```{r}
+pattern1 <- "\\["
+candy_names_first_bracket <- candy_names_good %>%
+  mutate(candy = str_replace(candy, pattern1, "")) %>%
+  select(age, gender, country, trick_or_treat, candy, emotion)
+```
+
+
+```{r}
+pattern2 <- "\\]"
+candy_names_second_bracket <- candy_names_first_bracket %>%
+  mutate(candy = str_replace(candy, pattern2, "")) %>%
+  select(age, gender, country, trick_or_treat, candy, emotion)
+```
+
+
+```{r}
+unique(candy_names_second_bracket$candy)
+```
+
+
+```{r}
+# after looking at the unique values for the candy column, I decided to replace all the ones that are not related to candy with NA.
+
+candy_almost_clean <- candy_names_second_bracket %>%
+  mutate(candy = replace(candy, candy == "Real Housewives of Orange County Season 9 Blue-Ray", NA)) %>%
+  mutate(candy = replace(candy, candy == "Abstained from M&M'ing.", NA)) %>%
+  mutate(candy = replace(candy, candy == "Person of Interest Season 3 DVD Box Set (not including Disc 4 with hilarious outtakes)", NA)) %>%
+  mutate(candy = replace(candy, candy == "Sandwich-sized bags filled with BooBerry Crunch", NA)) %>%
+  mutate(candy = replace(candy, candy == "Sea-salt flavored stuff, probably chocolate, since this is the \"it\" flavor of the year", NA)) %>%
+  mutate(candy = replace(candy, candy == "Creepy Religious comics/Chick Tracts", NA)) %>%
+  mutate(candy = replace(candy, candy == "Cash, or other forms of legal tender", NA)) %>%
+  mutate(candy = replace(candy, candy == "Candy that is clearly just the stuff given out for free at restaurants", NA)) %>%   
+  mutate(candy = replace(candy, candy == "Vials of pure high fructose corn syrup, for main-lining into your vein", NA))
+```
+
+
+
+```{r}
+unique(candy_almost_clean$candy)
+```
+
+
+```{r}
+# I will have to remove NAs from the age column before finding the outliers
+
+candy_almost_clean <- drop_na(candy_almost_clean, "age")
+```
+
+
+
+
+
+```{r}
+# i now need to identify outliers and this can be done visually by looking at boxplot of the data. We only need to do this for the age data as that is the only numeric column in our data.
+
+boxplot(candy_almost_clean$age)
+```
+
+```{r}
+ggplot(candy_almost_clean, aes(x = "candy_almost_clean", y = age)) +
+    geom_boxplot()
+```
+
+
+```{r}
+library(outliers)
+```
+
+
+```{r}
+# we can clearly see that there are one or more outliers present in the age column.
+# I need to get the z-scores for this column
+
+age_zscores <- scores(candy_almost_clean$age)
+
+```
+
+
+```{r}
+# I will create a logical vector that is "TRUE" if zscores are greater than 3 or less than -3
+
+is_outlier <- age_zscores > 3 | age_zscores < -3
+```
+
+
+```{r}
+# I will add a column which shows the outliers
+candy_almost_clean <- candy_almost_clean %>%
+  mutate(is_outlier = is_outlier)
+```
+
+
+
+
+```{r}
+# I have now created a plot showing the outliers and non-outliers separately
+
+ggplot(candy_almost_clean, aes(y = age)) +
+    geom_boxplot() +
+    coord_flip() +
+    facet_wrap(~is_outlier)
+```
+
+
+
+```{r}
+# I created a table just with the outliers which clearly shows the age "200587" is present 95 times in the date
+
+age_outliers <- candy_almost_clean %>%
+  filter(is_outlier == TRUE)
+```
+
+
+```{r}
+# I removed these outliers by filtering
+candy_no_outliers <- candy_almost_clean %>%
+  filter(is_outlier == FALSE)
+```
+
+
+```{r}
+# re-check the age data to make sure there are no more weird values
+unique(candy_no_outliers$age)
+```
+
+
+
+```{r}
+# I found some weird values in the age column and I will now get rid of them. I doubt any of the plausible age values are ages of people who completed the survey the data is based on.
+
+age_na <- candy_no_outliers %>%
+  mutate(age = replace(age, age == "5", NA)) %>%
+  mutate(age = replace(age, age == "6", NA)) %>%
+  mutate(age = replace(age, age == "7", NA)) %>%
+  mutate(age = replace(age, age == "8", NA)) %>%
+  mutate(age = replace(age, age == "490", NA)) %>%
+  mutate(age = replace(age, age == "100", NA)) %>%
+  mutate(age = replace(age, age == "142", NA)) %>%
+  mutate(age = replace(age, age == "115", NA)) %>%
+  mutate(age = replace(age, age == "123", NA)) %>%
+  mutate(age = replace(age, age == "312", NA)) %>%
+  mutate(age = replace(age, age == "388", NA)) %>%
+  mutate(age = replace(age, age == "120", NA)) %>%
+  mutate(age = replace(age, age == "102", NA)) %>%
+  mutate(age = replace(age, age == "0", NA)) %>%
+  mutate(age = replace(age, age == "108", NA)) %>%
+  mutate(age = replace(age, age == "1000", NA)) %>%
+  mutate(age = replace(age, age == "350", NA)) %>%
+  mutate(age = replace(age, age == "2000", NA)) %>%
+  mutate(age = replace(age, age == "400", NA)) %>%
+  mutate(age = replace(age, age == "4", NA)) %>%
+  mutate(age = replace(age, age == "9", NA)) %>%
+  mutate(age = replace(age, age == "1880", NA)) %>%
+  mutate(age = replace(age, age == "1", NA))
+unique(age_na$age)
+```
+
+
+
+```{r}
+# drop NAs from age column
+clean_candy <- drop_na(age_na, "age")
+```
+
+
+```{r}
+# remove outlier column and export
+clean_candy_data <- clean_candy %>%
+  select(-is_outlier)
+```
+
+
+```{r}
+write_csv(clean_candy_data, here("3_clean_data/clean_candy_data.csv"))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

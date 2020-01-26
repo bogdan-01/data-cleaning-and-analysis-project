@@ -1,0 +1,83 @@
+
+
+```{r, message=FALSE}
+library(tidyverse)
+library(readr)
+library(here)
+```
+
+
+```{r, message=FALSE}
+clean_data <- read_csv(here("3_clean_data/clean_decathlon.csv"))
+
+head(clean_data)
+```
+
+```{r}
+names(clean_data)
+```
+
+
+
+1. I am going to find out who had the longest long jump seen in the data.
+
+```{r, message=FALSE}
+longest_jump <- clean_data %>%
+  filter(event == "long_jump") %>%
+  arrange(desc(result)) %>%
+  top_n(1)
+  
+longest_jump
+```
+
+
+2. I am going to check what the average time for the 100m competition was.
+
+```{r}
+avg_100m_time <- clean_data %>%
+  select(name, competition, event, result) %>%
+  group_by(competition) %>%
+  filter(event == "100m") %>%
+  summarise(mean_100m_time = mean(result))
+  
+avg_100m_time
+```
+
+
+
+3. Checking to see who had the highest total points across both competitions.
+
+```{r, message=FALSE}
+highest_points <- clean_data %>%
+  distinct(name, competition, points) %>%
+  group_by(name) %>%
+  summarise(highest_total_points = sum(points)) %>%
+  arrange(desc(highest_total_points)) %>%
+  top_n(1)
+
+highest_points
+```
+
+
+
+4. Checking the shot-put scores for the top three competitors in each competition.
+
+  
+```{r}
+top_three_shot_put <- clean_data %>%
+  filter(rank <= 3) %>%
+  filter(event == "shot_put")
+  
+top_three_shot_put
+```
+
+
+
+
+
+
+
+
+
+
+

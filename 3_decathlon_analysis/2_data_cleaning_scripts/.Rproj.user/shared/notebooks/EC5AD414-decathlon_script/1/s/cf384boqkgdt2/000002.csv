@@ -1,0 +1,2 @@
+"0","row_names <- rownames_to_column(tidy_decathlon, var = ""name"")"
+"0","row_names"

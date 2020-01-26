@@ -1,0 +1,3 @@
+"0","# remove these outliers by filtering"
+"0","candy_no_outliers <- candy_almost_clean %>%"
+"0","  filter(is_outlier == FALSE)"

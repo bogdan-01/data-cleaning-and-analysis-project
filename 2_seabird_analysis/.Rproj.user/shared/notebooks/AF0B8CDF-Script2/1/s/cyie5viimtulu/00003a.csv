@@ -1,0 +1,11 @@
+"0","most_sightings <- clean_seabirds %>%"
+"0","  select(bird_common_name, bird_scientific_name, bird_abbrev_name, count) %>%"
+"0","  group_by(bird_common_name, bird_scientific_name, bird_abbrev_name) %>%"
+"0","  summarise(most_sightings = sum(count)) %>%"
+"0","  arrange(desc(most_sightings)) %>%"
+"0","  top_n(1)"
+"2","Selecting by most_sightings
+"
+"0","  "
+"0",""
+"0","most_sightings"

@@ -1,0 +1,6 @@
+"0","# I have now created a plot showing the outliers and non-outliers separately"
+"0",""
+"0","ggplot(candy_almost_clean, aes(y = age)) +"
+"0","    geom_boxplot() +"
+"0","    coord_flip() +"
+"0","    facet_wrap(~is_outlier)"

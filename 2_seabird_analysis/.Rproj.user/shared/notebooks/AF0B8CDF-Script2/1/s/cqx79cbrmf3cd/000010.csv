@@ -1,0 +1,6 @@
+"0","penguins_sighted <- clean_seabirds %>%"
+"0","  select(bird_common_name, bird_scientific_name, bird_abbrev_name, count) %>%"
+"0","  filter(bird_common_name %in% ""penguin"")"
+"0",""
+"0",""
+"0","penguins_sighted"

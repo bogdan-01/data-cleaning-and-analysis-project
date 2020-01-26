@@ -1,0 +1,2 @@
+"0","# drop NAs from age column"
+"0","clean_candy <- drop_na(age_na, ""age"")"

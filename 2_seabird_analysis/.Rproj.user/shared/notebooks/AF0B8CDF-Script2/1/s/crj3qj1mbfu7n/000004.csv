@@ -1,0 +1,6 @@
+"0","highest_total_count <- clean_seabirds %>%"
+"0","  select(bird_common_name, bird_scientific_name, bird_abbrev_name, count) %>%"
+"0","  arrange(desc(count)) %>%"
+"0","  top_n(1, count)"
+"0","  "
+"0","highest_total_count"

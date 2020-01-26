@@ -1,0 +1,5 @@
+"0","# rename columns"
+"0",""
+"0","seabirds_clean <- seabirds_no_na %>%"
+"0","  rename(record_id = ""RECORD ID"", bird_common_name = ""Species common name (taxon [AGE / SEX / PLUMAGE PHASE])"", bird_scientific_name = ""Species  scientific name (taxon [AGE /SEX /  PLUMAGE PHASE])"", bird_abbrev_name = ""Species abbreviation"", count = COUNT, latitude = LATCELL, longitude = LONGECELL)"
+"0","view(seabirds_clean)"

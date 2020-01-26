@@ -1,0 +1,21 @@
+"0","clean_candy_data <- read_csv(here(""clean_data/clean_candy_data.csv""))"
+"2","Parsed with column specification:
+cols(
+  age = [32mcol_double()[39m,
+  gender = [33mcol_logical()[39m,
+  country = [33mcol_logical()[39m,
+  trick_or_treat = [31mcol_character()[39m,
+  candy = [31mcol_character()[39m,
+  emotion = [31mcol_character()[39m
+)
+"
+"2","717611 parsing failures.
+   row     col           expected actual                                                                       file
+504261 gender  1/0/T/F/TRUE/FALSE Male   '/Users/Dora/data_cleaning_project/task_4/clean_data/clean_candy_data.csv'
+504261 country 1/0/T/F/TRUE/FALSE Canada '/Users/Dora/data_cleaning_project/task_4/clean_data/clean_candy_data.csv'
+504262 gender  1/0/T/F/TRUE/FALSE Male   '/Users/Dora/data_cleaning_project/task_4/clean_data/clean_candy_data.csv'
+504262 country 1/0/T/F/TRUE/FALSE Canada '/Users/Dora/data_cleaning_project/task_4/clean_data/clean_candy_data.csv'
+504263 gender  1/0/T/F/TRUE/FALSE Male   '/Users/Dora/data_cleaning_project/task_4/clean_data/clean_candy_data.csv'
+...... ....... .................. ...... ..........................................................................
+See problems(...) for more details.
+"

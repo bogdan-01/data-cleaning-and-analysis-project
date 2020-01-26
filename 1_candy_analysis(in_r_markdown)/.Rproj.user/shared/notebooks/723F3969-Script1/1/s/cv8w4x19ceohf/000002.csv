@@ -1,0 +1,2 @@
+"0","joined_candy <- bind_rows(long_2015_candy, long_2016_candy, long_2017_candy)"
+"0","joined_candy"

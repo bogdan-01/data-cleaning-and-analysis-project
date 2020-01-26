@@ -1,0 +1,6 @@
+"0","# as I haven't done this through the janitor package before pivoting long and joining the columns, I will need to replace the characters before and after the name of the candy by using str_replace."
+"0",""
+"0","pattern <- ""Q6 \\| """
+"0","candy_names_good <- joined_candy_to_na %>%"
+"0","  mutate(candy = str_replace(candy, pattern, """")) %>%"
+"0","  select(age, gender, country, trick_or_treat, candy, emotion)"

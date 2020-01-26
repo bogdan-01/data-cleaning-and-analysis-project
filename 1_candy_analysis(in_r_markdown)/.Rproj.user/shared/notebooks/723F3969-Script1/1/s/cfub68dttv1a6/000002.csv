@@ -1,0 +1,3 @@
+"0","# remove outlier column and export"
+"0","clean_candy_data <- clean_candy %>%"
+"0","  select(-is_outlier)"
